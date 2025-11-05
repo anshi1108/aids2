@@ -1,0 +1,72 @@
+# Step 1: Importing Libraries and Image Setup
+!pip install easyocr
+import easyocr
+import cv2
+from matplotlib import pyplot as plt
+import numpy as np
+
+path = "new.png"
+
+# Step 2: Initializing EasyOCR and Reading Image
+reader = easyocr.Reader(['en'])
+result = reader.readtext(path)
+result
+
+# Step 3: Output of Text Recognition
+top_left = tuple(result[0][0][0])
+bottom_right = tuple(result[0][0][2])
+text = result[0][1]
+font = cv2.FONT_HERSHEY_SIMPLEX
+
+img = cv2.imread(path)
+img = cv2.rectangle(img, top_left, bottom_right, (0, 255, 0), 3)
+img = cv2.putText(img, text, top_left, font, 0.5, (255, 255, 255), 2, cv2.LINE_AA)
+plt.imshow(img)
+plt.show()
+
+# Step 4: Extracting a Single Text Output
+single_text = result[0][1]
+single_text
+
+# Step 5: Reading Multiple Texts from an Image
+path2 = 'Image2.png'
+reader = easyocr.Reader(['en'])
+result = reader.readtext(path2)
+result
+
+# Step 6: Selecting Specific Text from Results
+final_text = result[0][1]
+final_text
+
+# Step 7: Visualizing Detected Text with Bounding Boxes
+img = cv2.imread(path)
+spacer = 100
+for i, line in enumerate(result):
+    top_left = tuple(line[0][0])
+    bottom_right = tuple(line[0][2])
+    text = line[1]
+    font = cv2.FONT_HERSHEY_SIMPLEX
+    img = cv2.rectangle(img, top_left, bottom_right, (0, 255, 0), 3)
+    img = cv2.putText(img, text, top_left, font, 0.5, (0, 0, 0), 1, cv2.LINE_AA)
+    spacer += 15
+plt.imshow(img)
+plt.show()
+
+# Step 8: Part-of-Speech Tagging with TextBlob
+!pip install textblob
+!python -m textblob.download_corpora
+from textblob import TextBlob
+import nltk
+
+blob1 = TextBlob(single_text)
+blob1.tags
+
+# Step 9: Extracting Noun Phrases and Sentiment Analysis
+blob1.noun_phrases
+print(blob1.sentiment)
+
+# Step 10: POS Tagging and Sentiment Analysis of a Custom Sentence
+final_text = "HELLO!! You look interesting today"
+blob = TextBlob(final_text)
+blob.tags
+print(blob.sentiment)
