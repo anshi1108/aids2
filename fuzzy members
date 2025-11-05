@@ -1,0 +1,79 @@
+# Step 1: Installing and Importing Libraries
+!pip install pyit2fls
+
+from numpy import linspace
+import matplotlib.pyplot as plt
+from pyit2fls import (
+    zero_mf,
+    singleton_mf,
+    const_mf,
+    tri_mf,
+    ltri_mf,
+    rtri_mf,
+    trapezoid_mf,
+    gaussian_mf
+)
+
+# Step 2: Creating the Domain and Defining Membership Functions
+domain = linspace(0., 1., 1001)
+zero = zero_mf(domain)
+singleton = singleton_mf(domain, [0.5, 1.])
+const = const_mf(domain, [1.])
+tri = tri_mf(domain, [0., 0.5, 1., 1.])
+ltri = ltri_mf(domain, [0.5, 1., 1.])
+rtri = rtri_mf(domain, [0.5, 0., 1.])
+trapezoid = trapezoid_mf(domain, [0., 0.3, 0.8, 1., 1.])
+gaussian = gaussian_mf(domain, [0.5, 0.1, 1.])
+
+# Step 3a: Plotting Zero MF and Constant MF
+plt.figure()
+plt.plot(domain, zero, label="All Zero MF")
+plt.plot(domain, const, label="Constant MF")
+plt.grid(True)
+plt.legend()
+plt.xlabel("Domain")
+plt.ylabel("Membership Function")
+plt.title("Zero and Constant Membership Functions")
+plt.show()
+
+# Step 3b: Plotting Singleton MF
+plt.figure()
+plt.plot(domain, singleton, label="Singleton MF")
+plt.grid(True)
+plt.legend()
+plt.xlabel("Domain")
+plt.ylabel("Membership Function")
+plt.title("Singleton Membership Function")
+plt.show()
+
+# Step 3c: Plotting Triangular, Left Triangular, and Right Triangular MFs
+plt.figure()
+plt.plot(domain, tri, label="Triangular MF")
+plt.plot(domain, ltri, label="Left Triangular MF")
+plt.plot(domain, rtri, label="Right Triangular MF")
+plt.grid(True)
+plt.legend()
+plt.xlabel("Domain")
+plt.ylabel("Membership Function")
+plt.title("Triangular Membership Functions")
+plt.show()
+
+# Step 3d: Plotting Trapezoidal MF
+plt.figure()
+plt.plot(domain, trapezoid, label="Trapezoidal MF")
+plt.grid(True)
+plt.legend()
+plt.xlabel("Domain")
+plt.ylabel("Membership Function")
+plt.title("Trapezoidal Membership Function")
+plt.show()
+
+# Step 3e: Plotting Gaussian MF
+plt.figure()
+plt.plot(domain, gaussian, label="Gaussian MF")
+plt.grid(True)
+plt.legend()
+plt.xlabel("Domain")
+plt.ylabel("Membership Function")
+plt.title("Gaussian Membership Function")
+plt.show()
