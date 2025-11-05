@@ -1,0 +1,79 @@
+# Step 1: Defining Helper Function and Fuzzy Sets
+
+def checkElementHelper(fuzzy_set, element):
+    """Return the membership value of an element in the fuzzy set."""
+    return fuzzy_set.get(element, 0)
+
+# Define fuzzy sets with elements and membership values
+ClassA = {
+    'apple': 0.7,
+    'banana': 0.5,
+    'cherry': 0.3,
+    'orange': 0.9
+}
+
+ClassB = {
+    'apple': 0.4,
+    'banana': 0.6,
+    'cherry': 0.2,
+    'mango': 0.8
+}
+
+print("Fuzzy Set A:", ClassA)
+print("Fuzzy Set B:", ClassB)
+
+# Step 2: Implementation of Fuzzy Union Operation
+def union(fuzzyA, fuzzyB):
+    result = {}
+    elements = set(fuzzyA.keys()).union(set(fuzzyB.keys()))
+    for e in elements:
+        result[e] = max(checkElementHelper(fuzzyA, e), checkElementHelper(fuzzyB, e))
+    return result
+
+fuzzy_union = union(ClassA, ClassB)
+print("\nFuzzy Union (A ∪ B):", fuzzy_union)
+
+# Step 3: Implementation of Fuzzy Intersection Operation
+def intersection(fuzzyA, fuzzyB):
+    result = {}
+    common = set(fuzzyA.keys()).intersection(set(fuzzyB.keys()))
+    for e in common:
+        result[e] = min(fuzzyA[e], fuzzyB[e])
+    return result
+
+fuzzy_intersection = intersection(ClassA, ClassB)
+print("\nFuzzy Intersection (A ∩ B):", fuzzy_intersection)
+
+# Step 4: Implementation of Fuzzy Complement Operation
+def complement(fuzzyA):
+    result = {}
+    for e, val in fuzzyA.items():
+        result[e] = 1 - val
+    return result
+
+fuzzy_complement = complement(ClassA)
+print("\nFuzzy Complement (~A):", fuzzy_complement)
+
+# Step 5: Implementation of Fuzzy Sum Operation
+def fuzzy_sum(fuzzyA, fuzzyB):
+    result = {}
+    elements = set(fuzzyA.keys()).union(set(fuzzyB.keys()))
+    for e in elements:
+        a = checkElementHelper(fuzzyA, e)
+        b = checkElementHelper(fuzzyB, e)
+        result[e] = a + b - (a * b)
+    return result
+
+fuzzy_sum_result = fuzzy_sum(ClassA, ClassB)
+print("\nFuzzy Sum (A + B - A*B):", fuzzy_sum_result)
+
+# Step 6: Implementation of Fuzzy Product Operation
+def fuzzy_product(fuzzyA, fuzzyB):
+    result = {}
+    common = set(fuzzyA.keys()).intersection(set(fuzzyB.keys()))
+    for e in common:
+        result[e] = fuzzyA[e] * fuzzyB[e]
+    return result
+
+fuzzy_product_result = fuzzy_product(ClassA, ClassB)
+print("\nFuzzy Product (A * B):", fuzzy_product_result)
