@@ -1,0 +1,56 @@
+Step 1: To initialise the BayesianModel by passing a list of edges in the model structure.
+from pgmpy.models import BayesianNetwork
+from pgmpy.factors.discrete import TabularCPD
+import networkx as nx
+import pylab as plt
+Step 2: Define the CPDs (Conditional Probability Distribution).
+# Defining Bayesian Structure
+model = DiscreteBayesianNetwork([('Rain', 'WetGrass'), ('Sprinkler', 'WetGrass')])
+# Define CPDs
+cpd_rain = TabularCPD(variable='Rain', variable_card=4, values=[[0.1], [0.2], [0.3], [0.4]])
+cpd_sprinkler = TabularCPD(variable='Sprinkler', variable_card=4, values=[[0.4],
+[0.25],[0.15],[0.2]])
+cpd_wetgrass = TabularCPD(variable='WetGrass', variable_card=2,
+ values=[
+ [0.99, 0.9, 0.85, 0.8,
+ 0.9, 0.85, 0.8, 0.75,
+ 0.85, 0.8, 0.75, 0.7,
+ 0.8, 0.75, 0.7, 0.65], # P(WetGrass=0)
+ [0.01, 0.1, 0.15, 0.2,
+ 0.1, 0.15, 0.2, 0.25,
+ 0.15, 0.2, 0.25, 0.3,
+ 0.2, 0.25, 0.3, 0.35] # P(WetGrass=1)
+ ],
+ evidence=['Rain', 'Sprinkler'],
+ evidence_card=[4, 4]) # 4 states for each
+OUTPUT:
+Step 3: Add the CPDs to the model.
+# Add CPDs to the model
+model.add_cpds(cpd_rain, cpd_sprinkler, cpd_wetgrass)
+OUTPUT:
+Now let’s perform inference on the network. For example, if we want to find out the probability
+that the grass is wet given that it is raining, we need to compute the posterior probability using
+the Bayesian Network. To do this, we pass the observed evidence to the inference function. Here,
+the evidence represents the observed state of one or more variables. In this case, the fact that it is
+raining. Using this evidence, the network calculates the updated probabilities for other variables,
+such as whether the grass is wet.
+from pgmpy.inference import VariableElimination
+# Run inference
+infer = VariableElimination(model)
+result = infer.query(variables=['Rain'], evidence={'WetGrass': 1})
+print(result)
+OUTPUT:
+result = infer.query(variables=['WetGrass'], evidence={'Rain': 1, 'Sprinkler': 2})
+print(result)
+OUTPUT:
+Now, let’s plot our above model. This can be done with the help of Network and Pylab.
+NetworkX is a Python-based software package for constructing, altering, and researching the
+structure, dynamics, and function of complex networks. PyLab is a procedural interface to the
+object-oriented charting toolkit Matplotlib, and it is used to examine large complex networks
+represented as graphs with nodes and edges.
+G = nx.DiGraph()
+G.add_edges_from(model.edges())
+nx.draw(G, with_labels=True, node_size=2000, node_color='lightcoral', font_size=10, arrows=True)
+plt.title("Bayesian Network Structure")
+plt.show()
+OUTPUT:
