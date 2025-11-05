@@ -1,0 +1,50 @@
+from pgmpy.estimators import MaximumLikelihoodEstimator
+from pgmpy.models import DiscreteBayesianNetwork
+from pgmpy.inference import VariableElimination
+import pandas as pd
+import numpy as np
+import networkx as nx
+import pylab as plt
+
+# Loading and Preprocessing the Dataset
+heartDisease = pd.read_csv('7-dataset.csv')
+heartDisease = heartDisease.replace('?', np.nan)
+print('Sample instances from the dataset are given below')
+print(heartDisease.head())
+print('\nAttributes and datatypes')
+print(heartDisease.dtypes)
+
+# Defining the Bayesian Network Structure
+model = DiscreteBayesianNetwork([
+    ('age', 'heartdisease'),
+    ('exang', 'heartdisease'),
+    ('cp', 'heartdisease'),
+    ('heartdisease', 'restecg'),
+    ('heartdisease', 'chol')
+])
+
+# Learning CPDs Using Maximum Likelihood Estimation
+print('\nLearning CPD using Maximum likelihood estimators')
+model.fit(heartDisease, estimator=MaximumLikelihoodEstimator)
+
+# Performing Inference with the Bayesian Network
+print('\nInferencing with Bayesian Network:')
+HeartDiseasetest_infer = VariableElimination(model)
+
+# Example inference query
+q = HeartDiseasetest_infer.query(
+    variables=['heartdisease'],
+    evidence={'age': 63, 'cp': 4}
+)
+print("\nProbability of heart disease given age=63 and cp=4:")
+print(q)
+
+# Visualising the Bayesian Network Structure
+G = nx.DiGraph()
+G.add_edges_from(model.edges())
+nx.draw(
+    G, with_labels=True, node_size=2000, node_color='lightcoral',
+    font_size=10, arrows=True
+)
+plt.title("Bayesian Network Structure")
+plt.show()
